@@ -1,8 +1,7 @@
 import React from 'react';
-import { TouchableOpacity, Text } from 'react-native';
+import { TouchableOpacity, Text, Image } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../context/AuthContext';
 import SearchScreen from '../screens/tenant/SearchScreen';
 import ShortlistScreen from '../screens/tenant/ShortlistScreen';
@@ -71,17 +70,40 @@ const TenantStack = () => {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
-          let iconName = 'list';
-
           if (route.name === 'SearchStack') {
-            iconName = focused ? 'search' : 'search-outline';
-          } else if (route.name === 'ShortlistStack') { 
-            iconName = focused ? 'heart' : 'heart-outline';
+            return (
+              <Image 
+                source={require('../../assets/search-icon.png')}
+                style={{ 
+                  width: size, 
+                  height: size,
+                  tintColor: color,
+                }}
+              />
+            );
+          } else if (route.name === 'ShortlistStack') {
+            return (
+              <Image 
+                source={require('../../assets/heart.png')}
+                style={{ 
+                  width: size, 
+                  height: size,
+                  tintColor: color,
+                }}
+              />
+            );
           } else if (route.name === 'Requests') {
-            iconName = focused ? 'document-text' : 'document-text-outline';
+            return (
+              <Image 
+                source={require('../../assets/google-docs.png')}
+                style={{ 
+                  width: size, 
+                  height: size,
+                  tintColor: color,
+                }}
+              />
+            );
           }
-
-          return <Ionicons name={iconName as any} size={size} color={color} />;
         },
       })}
     >

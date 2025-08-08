@@ -1,8 +1,7 @@
 import React from 'react';
-import { TouchableOpacity, Text, View } from 'react-native';
+import { TouchableOpacity, Text, View, Image } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../context/AuthContext';
 import PropertyListScreen from '../screens/landlord/PropertyListScreen';
 import AddPropertyScreen from '../screens/landlord/AddPropertyScreen';
@@ -91,15 +90,29 @@ const LandlordStack = () => {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
-          let iconName: keyof typeof Ionicons.glyphMap = 'home-outline';  
-
           if (route.name === 'MyProperties') {
-            iconName = focused ? 'home' : 'home-outline';
+            return (
+              <Image 
+                source={require('../../assets/home (1).png')}
+                style={{ 
+                  width: size, 
+                  height: size,
+                  tintColor: color, 
+                }}
+              />
+            );
           } else if (route.name === 'SearchProperties') {
-            iconName = focused ? 'search' : 'search-outline';
+            return (
+              <Image 
+                source={require('../../assets/search-icon.png')}
+                style={{ 
+                  width: size, 
+                  height: size,
+                  tintColor: color,
+                }}
+              />
+            );
           }
-
-          return <Ionicons name={iconName} size={size} color={color} />;
         },
       })}
     >
