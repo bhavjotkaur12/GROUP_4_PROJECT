@@ -4,7 +4,6 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  ActivityIndicator,
   StyleSheet,
   ScrollView,
   Alert,
@@ -73,7 +72,7 @@ const EditPropertyScreen = ({ route, navigation }: { route: any, navigation: any
   if (loading) {
     return (
       <View style={styles.centered}>
-        <ActivityIndicator size="large" color="#007AFF" />
+        <Text style={styles.loadingText}>Loading...</Text>
       </View>
     );
   }
@@ -177,6 +176,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 16,
     fontWeight: '600',
+  },
+  loadingText: {
+    fontSize: 16,
+    color: '#007AFF',
   },
 });
 

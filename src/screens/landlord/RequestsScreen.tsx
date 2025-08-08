@@ -3,8 +3,9 @@ import {
   View,
   FlatList,
   StyleSheet,
-  ActivityIndicator,
-  RefreshControl,
+  // Remove this:
+  // ActivityIndicator,
+  Text
 } from 'react-native';
 import { 
   collection, 
@@ -54,7 +55,6 @@ interface RequestWithDetails extends Request {
 const RequestsScreen = ({ navigation, route }: RequestsScreenProps) => {
   const [requests, setRequests] = useState<RequestWithDetails[]>([]);
   const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
   const { userData } = useAuth();
   
   const { propertyId } = route.params;
@@ -110,15 +110,10 @@ const RequestsScreen = ({ navigation, route }: RequestsScreenProps) => {
     return () => unsubscribe();
   }, [userData, propertyId]);  
 
-  const onRefresh = React.useCallback(() => {
-    setRefreshing(true);
-    setTimeout(() => setRefreshing(false), 1000);
-  }, []);
-
   if (loading) {
     return (
       <View style={styles.centered}>
-        <ActivityIndicator size="large" color="#007AFF" />
+        <Text style={styles.loadingText}>Loading requests...</Text>
       </View>
     );
   }
@@ -134,9 +129,6 @@ const RequestsScreen = ({ navigation, route }: RequestsScreenProps) => {
           />
         )}
         keyExtractor={item => item.id}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
         contentContainerStyle={styles.listContent}
       />
     </View>
@@ -155,6 +147,10 @@ const styles = StyleSheet.create({
   },
   listContent: {
     padding: 16,
+  },
+  loadingText: {
+    fontSize: 16,
+    color: '#007AFF',
   },
 });
 

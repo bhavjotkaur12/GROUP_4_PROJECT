@@ -5,7 +5,6 @@ import {
   TextInput,
   StyleSheet,
   FlatList,
-  ActivityIndicator,
   TouchableOpacity,
   Text,
   Image,
@@ -94,7 +93,9 @@ const SearchScreen = ({ navigation }: { navigation: any }) => {
       />
 
       {loading ? (
-        <ActivityIndicator size="large" color="#007AFF" />
+        <View style={styles.centered}>
+          <Text style={styles.loadingText}>Searching properties...</Text>
+        </View>
       ) : (
         <FlatList
           data={properties}
@@ -143,6 +144,15 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: '600',
+  },
+  centered: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    fontSize: 16,
+    color: '#007AFF',
   },
 });
 

@@ -7,8 +7,6 @@ import {
   Image,
   TouchableOpacity,
   Alert,
-  ActivityIndicator,
-  Dimensions,
   FlatList,
 } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
@@ -165,7 +163,7 @@ const PropertyDetailScreen = ({ route, navigation }: { route: any; navigation: a
   if (loading) {
     return (
       <View style={styles.centered}>
-        <ActivityIndicator size="large" color="#007AFF" />
+        <Text style={styles.loadingText}>Loading...</Text>
       </View>
     );
   }
@@ -191,10 +189,12 @@ const PropertyDetailScreen = ({ route, navigation }: { route: any; navigation: a
               horizontal
               pagingEnabled
               showsHorizontalScrollIndicator={false}
+              style={{ width: '100%' }}
               onScroll={(event) => {
-                const contentOffset = event.nativeEvent.contentOffset.x;
-                const imageIndex = Math.round(contentOffset / Dimensions.get('window').width);
-                setActiveImageIndex(imageIndex);
+                const offset = event.nativeEvent.contentOffset.x;
+                const pageWidth = event.nativeEvent.layoutMeasurement.width;
+                const index = Math.floor(offset / pageWidth);
+                setActiveImageIndex(index);
               }}
               scrollEventThrottle={16}
             />
@@ -221,7 +221,7 @@ const PropertyDetailScreen = ({ route, navigation }: { route: any; navigation: a
         <Text style={styles.sectionTitle}>Location</Text>
         <View style={styles.mapContainer}>
           {locationLoading ? (
-            <ActivityIndicator size="large" color="#007AFF" />
+            <Text style={styles.loadingText}>Loading map...</Text>
           ) : (
             <MapView
               style={styles.map}
@@ -305,11 +305,13 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     height: 250,
+    width: '100%',
     position: 'relative',
   },
   image: {
-    width: Dimensions.get('window').width,
+    width: 400,
     height: 250,
+    resizeMode: 'cover',
   },
   dotsContainer: {
     flexDirection: 'row',
@@ -419,6 +421,10 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',
+  },
+  loadingText: {
+    fontSize: 16,
+    color: '#007AFF',
   },
 });
 

@@ -7,7 +7,6 @@ import {
   StyleSheet,
   ScrollView,
   Alert,
-  ActivityIndicator,
 } from 'react-native';
 import * as ExpoImagePicker from 'expo-image-picker';
 import { storage } from '../config/FirebaseConfig';
@@ -115,7 +114,7 @@ const ImagePicker: React.FC<ImagePickerProps> = ({ images, onImagesChanged }) =>
           disabled={uploading}
         >
           {uploading ? (
-            <ActivityIndicator color="#007AFF" />
+            <Text style={styles.uploadingText}>Uploading...</Text>
           ) : (
             <Ionicons name="add" size={32} color="#007AFF" />
           )}
@@ -165,6 +164,10 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: '#ddd',
     borderStyle: 'dashed',
+  },
+  uploadingText: {
+    color: '#007AFF',
+    fontSize: 14,
   },
 });
 

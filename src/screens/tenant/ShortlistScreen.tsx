@@ -4,9 +4,8 @@ import {
   Text,
   FlatList,
   StyleSheet,
-  ActivityIndicator,
-  RefreshControl,
   Alert,
+  Button,
 } from 'react-native';
 import { collection, query, where, getDocs, deleteDoc, doc, getDoc } from 'firebase/firestore';
 import { db } from '../../config/FirebaseConfig';
@@ -31,7 +30,6 @@ interface Property {
 const ShortlistScreen = ({ navigation }: { navigation: any }) => {
   const [shortlistedProperties, setShortlistedProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
   const { userData } = useAuth();
 
   const fetchShortlistedProperties = async () => {
@@ -94,21 +92,20 @@ const ShortlistScreen = ({ navigation }: { navigation: any }) => {
     }
   };
 
-  const onRefresh = React.useCallback(() => {
-    setRefreshing(true);
-    fetchShortlistedProperties().then(() => setRefreshing(false));
-  }, []);
-
   if (loading) {
     return (
       <View style={styles.centered}>
-        <ActivityIndicator size="large" color="#007AFF" />
+        <Text style={styles.loadingText}>Loading shortlisted properties...</Text>
       </View>
     );
   }
 
   return (
     <View style={styles.container}>
+      <Button 
+        title="Refresh List"
+        onPress={() => fetchShortlistedProperties()}
+      />
       <FlatList
         data={shortlistedProperties}
         renderItem={({ item }) => (
@@ -121,9 +118,6 @@ const ShortlistScreen = ({ navigation }: { navigation: any }) => {
           />
         )}
         keyExtractor={item => item.id}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
         contentContainerStyle={[
           styles.listContent,
           shortlistedProperties.length === 0 && styles.emptyList
@@ -166,6 +160,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#666',
     textAlign: 'center',
+  },
+  loadingText: {
+    fontSize: 16,
+    color: '#007AFF',
   },
 });
 

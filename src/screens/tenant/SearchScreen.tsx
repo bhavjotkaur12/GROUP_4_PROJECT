@@ -5,8 +5,6 @@ import {
   TextInput,
   FlatList,
   StyleSheet,
-  ActivityIndicator,
-  RefreshControl,
   Alert,
 } from 'react-native';
 import { collection, query, where, getDocs } from 'firebase/firestore';
@@ -30,7 +28,6 @@ interface Property {
 const SearchScreen = ({ navigation }: { navigation: any }) => {
   const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
   const fetchProperties = async () => {
@@ -67,15 +64,10 @@ const SearchScreen = ({ navigation }: { navigation: any }) => {
     fetchProperties();
   }, [searchQuery]);
 
-  const onRefresh = React.useCallback(() => {
-    setRefreshing(true);
-    fetchProperties().then(() => setRefreshing(false));
-  }, []);
-
   if (loading) {
     return (
       <View style={styles.centered}>
-        <ActivityIndicator size="large" color="#007AFF" />
+        <Text style={styles.loadingText}>Searching properties...</Text>
       </View>
     );
   }
@@ -100,9 +92,6 @@ const SearchScreen = ({ navigation }: { navigation: any }) => {
           />
         )}
         keyExtractor={item => item.id}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
         contentContainerStyle={[
           styles.listContent,
           properties.length === 0 && styles.emptyList
@@ -155,6 +144,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#666',
     textAlign: 'center',
+  },
+  loadingText: {
+    fontSize: 16,
+    color: '#007AFF',
   },
 });
 

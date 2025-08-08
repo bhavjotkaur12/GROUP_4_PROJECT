@@ -4,8 +4,6 @@ import {
   Text,
   FlatList,
   StyleSheet,
-  ActivityIndicator,
-  RefreshControl,
   Alert,
 } from 'react-native';
 import { 
@@ -55,7 +53,6 @@ interface Request {
 const RequestsScreen = ({ navigation }: { navigation: any }) => {
   const [requests, setRequests] = useState<Request[]>([]);
   const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
   const { userData } = useAuth();
 
   useEffect(() => {
@@ -126,15 +123,10 @@ const RequestsScreen = ({ navigation }: { navigation: any }) => {
     }
   };
 
-  const onRefresh = React.useCallback(() => {
-    setRefreshing(true);
-    setTimeout(() => setRefreshing(false), 1000);
-  }, []);
-
   if (loading) {
     return (
       <View style={styles.centered}>
-        <ActivityIndicator size="large" color="#007AFF" />
+        <Text style={styles.loadingText}>Loading requests...</Text>
       </View>
     );
   }
@@ -171,9 +163,6 @@ const RequestsScreen = ({ navigation }: { navigation: any }) => {
           />
         )}
         keyExtractor={item => item.id}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
         contentContainerStyle={[
           styles.listContent,
           requests.length === 0 && styles.emptyList
@@ -218,6 +207,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#666',
     textAlign: 'center',
+  },
+  loadingText: {
+    fontSize: 16,
+    color: '#007AFF',
   },
 });
 

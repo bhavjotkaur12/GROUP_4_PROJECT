@@ -4,8 +4,6 @@ import {
   Text,
   FlatList, 
   StyleSheet, 
-  ActivityIndicator,
-  RefreshControl,
   TouchableOpacity,
   Image,
   Alert,
@@ -36,7 +34,6 @@ interface Property {
 const PropertyListScreen = ({ navigation, route }: Props) => {
   const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
   const { userData } = useAuth();
 
   useEffect(() => {
@@ -85,11 +82,6 @@ const PropertyListScreen = ({ navigation, route }: Props) => {
     };
   }, [userData]);
 
-  const onRefresh = React.useCallback(() => {
-    setRefreshing(true);
-    setTimeout(() => setRefreshing(false), 1000);
-  }, []);
-
   const handleToggleList = async (propertyId: string) => {
     try {
       const property = properties.find(p => p.id === propertyId);
@@ -109,7 +101,7 @@ const PropertyListScreen = ({ navigation, route }: Props) => {
   if (loading) {
     return (
       <View style={styles.centered}>
-        <ActivityIndicator size="large" color="#007AFF" />
+        <Text style={styles.loadingText}>Loading properties...</Text>
       </View>
     );
   }
@@ -131,9 +123,6 @@ const PropertyListScreen = ({ navigation, route }: Props) => {
           />
         )}
         keyExtractor={item => item.id}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
         contentContainerStyle={[
           styles.listContent,
           properties.length === 0 && styles.emptyList
@@ -193,6 +182,10 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',
+  },
+  loadingText: {
+    fontSize: 16,
+    color: '#007AFF',
   },
 });
 

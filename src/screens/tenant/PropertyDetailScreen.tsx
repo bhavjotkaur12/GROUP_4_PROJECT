@@ -7,8 +7,6 @@ import {
   Image,
   TouchableOpacity,
   Alert,
-  ActivityIndicator,
-  Dimensions,
   FlatList,
 } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
@@ -214,7 +212,7 @@ const PropertyDetailScreen = ({ route, navigation }: { route: any, navigation: a
   if (loading) {
     return (
       <View style={styles.centered}>
-        <ActivityIndicator size="large" color="#007AFF" />
+        <Text style={styles.loadingText}>Loading property details...</Text>
       </View>
     );
   }
@@ -230,7 +228,7 @@ const PropertyDetailScreen = ({ route, navigation }: { route: any, navigation: a
   return (
     <ScrollView style={styles.container}>
       {property.images && property.images.length > 0 ? (
-        <View>
+        <View style={styles.imageContainer}>
           <FlatList
             data={property.images}
             renderItem={renderImageItem}
@@ -238,11 +236,12 @@ const PropertyDetailScreen = ({ route, navigation }: { route: any, navigation: a
             horizontal
             pagingEnabled
             showsHorizontalScrollIndicator={false}
-            style={styles.imageContainer}
+            style={{ width: '100%' }}
             onScroll={(event) => {
-              const contentOffset = event.nativeEvent.contentOffset.x;
-              const imageIndex = Math.round(contentOffset / Dimensions.get('window').width);
-              setActiveImageIndex(imageIndex);
+              const offset = event.nativeEvent.contentOffset.x;
+              const pageWidth = event.nativeEvent.layoutMeasurement.width;
+              const index = Math.floor(offset / pageWidth);
+              setActiveImageIndex(index);
             }}
             scrollEventThrottle={16}
           />
@@ -267,7 +266,7 @@ const PropertyDetailScreen = ({ route, navigation }: { route: any, navigation: a
         <Text style={styles.sectionTitle}>Location</Text>
         <View style={styles.mapContainer}>
           {locationLoading ? (
-            <ActivityIndicator size="large" color="#007AFF" />
+            <Text style={styles.loadingText}>Loading map...</Text>
           ) : (
             <MapView
               style={styles.map}
@@ -349,11 +348,12 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   image: {
-    width: Dimensions.get('window').width,
+    width: 400,  
     height: 250,
+    resizeMode: 'cover',
   },
   placeholderImage: {
-    width: Dimensions.get('window').width,
+    width: '100%',
     height: 250,
     backgroundColor: '#f0f0f0',
     justifyContent: 'center',
@@ -419,7 +419,9 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   imageContainer: {
-    height: 250, 
+    height: 250,
+    width: '100%',
+    position: 'relative',
   },
   imageCounter: {
     position: 'absolute',
@@ -463,6 +465,10 @@ const styles = StyleSheet.create({
   map: {
     width: '100%',
     height: '100%',
+  },
+  loadingText: {
+    fontSize: 16,
+    color: '#007AFF',
   },
 });
 
