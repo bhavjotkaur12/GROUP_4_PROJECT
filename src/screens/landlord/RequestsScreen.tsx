@@ -3,8 +3,6 @@ import {
   View,
   FlatList,
   StyleSheet,
-  // Remove this:
-  // ActivityIndicator,
   Text
 } from 'react-native';
 import { 
