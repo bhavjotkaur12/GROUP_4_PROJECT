@@ -11,7 +11,6 @@ import {
 import * as ExpoImagePicker from 'expo-image-picker';
 import { storage } from '../config/FirebaseConfig';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { Ionicons } from '@expo/vector-icons';
 
 interface ImagePickerProps {
   images: string[];
@@ -103,7 +102,11 @@ const ImagePicker: React.FC<ImagePickerProps> = ({ images, onImagesChanged }) =>
               style={styles.removeButton}
               onPress={() => removeImage(index)}
             >
-              <Ionicons name="close-circle" size={24} color="red" />
+           
+              <Image 
+                source={require('../../assets/close.png')} 
+                style={styles.closeIcon}
+              />
             </TouchableOpacity>
           </View>
         ))}
@@ -116,7 +119,10 @@ const ImagePicker: React.FC<ImagePickerProps> = ({ images, onImagesChanged }) =>
           {uploading ? (
             <Text style={styles.uploadingText}>Uploading...</Text>
           ) : (
-            <Ionicons name="add" size={32} color="#007AFF" />
+            <Image 
+              source={require('../../assets/plus.png')}
+              style={{ width: 32, height: 32, tintColor: '#007AFF' }}
+            />
           )}
         </TouchableOpacity>
       </ScrollView>
@@ -149,10 +155,24 @@ const styles = StyleSheet.create({
   },
   removeButton: {
     position: 'absolute',
-    top: -10,
-    right: -10,
+    top: -8,
+    right: -8,
     backgroundColor: 'white',
     borderRadius: 12,
+    padding: 4, 
+    shadowColor: '#000',  
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+    elevation: 2,
+  },
+  closeIcon: {
+    width: 16,  
+    height: 16,
+    tintColor: '#FF3B30', 
   },
   addButton: {
     width: 150,
