@@ -12,7 +12,6 @@ import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import { auth, db } from '../../config/FirebaseConfig';
 import { Picker } from '@react-native-picker/picker';
-import { FirebaseError } from 'firebase/app';
 
 const SignUpScreen = ({ navigation }: { navigation: any }) => {
   const [email, setEmail] = useState('');
@@ -33,10 +32,7 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
       });
 
     } catch (error) {
-      const errorMessage = error instanceof FirebaseError 
-        ? error.message 
-        : 'An error occurred during sign up';
-      Alert.alert('Error', errorMessage);
+      Alert.alert('Error', 'Failed to sign up');
     }
   };
 

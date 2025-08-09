@@ -10,7 +10,7 @@ import {
   collection, 
   query, 
   where, 
-  onSnapshot, 
+  getDocs,  
   deleteDoc, 
   doc,
   getDoc,
@@ -56,29 +56,27 @@ const RequestsScreen = ({ navigation }: { navigation: any }) => {
   const { userData } = useAuth();
 
   useEffect(() => {
-    
-    if (!userData?.uid) {
-      setLoading(false);
-      return;
-    }
+    const fetchRequests = async () => {
+      if (!userData?.uid) {
+        setLoading(false);
+        return;
+      }
 
-    const q = query(
-      collection(db, 'requests'),
-      where('tenantId', '==', userData.uid)
-    );
-
-    const unsubscribe = onSnapshot(q, async (snapshot) => {
       try {
+        const q = query(
+          collection(db, 'requests'),
+          where('tenantId', '==', userData.uid)
+        );
+
+        const snapshot = await getDocs(q);
         const requestsData = await Promise.all(
           snapshot.docs.map(async (document) => {
             const requestData = document.data();
-            
             
             const propertyDocRef = doc(db, 'properties', requestData.propertyId);
             const propertyDoc = await getDoc(propertyDocRef);
             const propertyData = propertyDoc.data() || {};
 
-            
             const landlordDocRef = doc(db, 'users', requestData.landlordId);
             const landlordDoc = await getDoc(landlordDocRef);
             const landlordData = landlordDoc.data() || {};
@@ -108,9 +106,9 @@ const RequestsScreen = ({ navigation }: { navigation: any }) => {
       } finally {
         setLoading(false);
       }
-    });
+    };
 
-    return () => unsubscribe();
+    fetchRequests();
   }, [userData]);
 
   const handleWithdrawRequest = async (requestId: string) => {

@@ -6,10 +6,10 @@ import {
   Text
 } from 'react-native';
 import { 
-  collection, 
-  query, 
-  where, 
-  onSnapshot, 
+  collection,
+  query,
+  where,
+  getDocs,
   doc, 
   getDoc,
   DocumentData 
@@ -20,7 +20,7 @@ import RequestItem from '../../components/RequestItem';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { LandlordStackParamList } from '../../navigation/LandlordStack';
 
-// Add type for route params
+
 type RequestsScreenProps = NativeStackScreenProps<LandlordStackParamList, 'Requests'>;
 
 interface PropertyData {
@@ -58,16 +58,18 @@ const RequestsScreen = ({ navigation, route }: RequestsScreenProps) => {
   const { propertyId } = route.params;
 
   useEffect(() => {
-    if (!userData || !propertyId) return;
+    const fetchRequests = async () => {
+      if (!userData || !propertyId) return;
 
-    const q = query(
-      collection(db, 'requests'),
-      where('landlordId', '==', userData.uid),
-      where('propertyId', '==', propertyId)  
-    );
-
-    const unsubscribe = onSnapshot(q, async (snapshot) => {
       try {
+      
+        const q = query(
+          collection(db, 'requests'),
+          where('landlordId', '==', userData.uid),
+          where('propertyId', '==', propertyId)
+        );
+
+        const snapshot = await getDocs(q);
         const requestsData = await Promise.all(
           snapshot.docs.map(async (document) => {
             const requestData = document.data() as Request;
@@ -103,9 +105,9 @@ const RequestsScreen = ({ navigation, route }: RequestsScreenProps) => {
       } finally {
         setLoading(false);
       }
-    });
+    };
 
-    return () => unsubscribe();
+    fetchRequests();
   }, [userData, propertyId]);  
 
   if (loading) {
